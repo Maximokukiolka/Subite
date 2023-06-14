@@ -59,11 +59,19 @@ void setup() {
     return;
   }
 
-  String url = "http://10.4.4.255/hard";
+  String url = "http://10.4.4.225/hard";
+  String url_2 = "";
+  String url_3 = "";
+  String url_4 = "";
+  
+  int temp = "x";
+  int idVagon = "3";
+  int idTren = "1";
+  
   Serial.print("Requesting URL: ");
   Serial.println(url);
 
-  client.print(String("GET ") + url + " HTTP/1.1\r\n" + "Host: " + github_host + "\r\n" + "User-Agent: BuildFailureDetectorESP8266\r\n" + "Connection: close\r\n\r\n");
+  client.print(String("GET") + url + " HTTP/1.1\r\n" + "Host: " + temp + idVagon + idTren //github_host + "\r\n" + "User-Agent: BuildFailureDetectorESP8266\r\n" + "Connection: close\r\n\r\n");
 
   Serial.println("Request sent");
   while (client.available()) {
