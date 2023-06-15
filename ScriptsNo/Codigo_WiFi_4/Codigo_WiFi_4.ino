@@ -30,7 +30,7 @@ void setup() {
   Serial.println("Direccion IP: ");
   Serial.println(WiFi.localIP());
 
-  
+
   configTime(3 * 3600, 0, "pool.ntp.org", "time.nist.gov");
 
   Serial.print("Esperando para tiempo de sincronizacion NTP: ");
@@ -46,7 +46,7 @@ void setup() {
   Serial.print("timpo: ");
   Serial.print(asctime(&timeinfo));
 
-  // Use WiFiClientSecure class to create TLS connection
+
   WiFiClientSecure client;
   Serial.print("Conectandose a: ");
   Serial.println(github_host);
@@ -58,30 +58,26 @@ void setup() {
     Serial.println("Conexion fallida");
     return;
   }
-
-   String url = "http://10.8.17.118/hard";
-
-     int temp = 0;
-     int idVagon = 0;
-     int idTren = 1;
-
-//       String url_1 = url + temp;
-//       String url_2 = url + idVagon;
-//       String url_3 = url + idTren;
-           
   
   
-  Serial.print("Requesting URL: ");
+  int temp = 0;
+  int idVagon = 0;
+  int idTren = 0;
+  
+  String url = "http://10.8.17.118/hard";
+  String query = "?temp" + String(temp) + "&idVagon" + String(idVagon) + "&idTren";
+  String quer_url = url + query;
+  Serial.print("Pedido de la URL: ");
   Serial.println(url);
 
-//  client.print(String("GET")) + url + " HTTP/1.1\r\n" + "Host: "; + temp + idVagon + idTren //github_host + "\r\n" + "User-Agent: BuildFailureDetectorESP8266\r\n" + "Connection: close\r\n\r\n");
-   client.print(String("GET")) 
+  client.println(String("GET")) + quer_url;
 
-  Serial.println("Request sent");
+
+  Serial.println("Pedido enviado");
   while (client.available()) {
     String line = client.readStringUntil('\n');
     if (line == "\r") {
-      Serial.println("Headers received");
+      Serial.println("Headers receividos");
       break;
     }
   }
@@ -91,11 +87,11 @@ void setup() {
   } else {
     Serial.println("esp8266/Arduino CI has failed");
   }
-  Serial.println("Reply was:");
+  Serial.println("Respuesta:");
   Serial.println("==========");
   Serial.println(line);
   Serial.println("==========");
-  Serial.println("Closing connection");
+  Serial.println("Cerrando conexion");
 }
 
 void loop() {}
