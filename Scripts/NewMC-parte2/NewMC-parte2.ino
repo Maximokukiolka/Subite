@@ -45,7 +45,6 @@ void loop() {
     http.begin(client, "http://" SERVER_IP "/hard");  // HTTP
     http.addHeader("Content-Type", "application/json");
 
-    // Crear un objeto JSON con los datos
     StaticJsonDocument<256> jsonDocument;
     jsonDocument["temp"] = temp;
     jsonDocument["idVagon"] = idVagon;
@@ -61,7 +60,7 @@ void loop() {
     if (httpCode > 0) {
       Serial.printf("[HTTP] POST... code: %d\n", httpCode);
 
-      // Archivo encontrado en el servidor
+      
       if (httpCode == HTTP_CODE_OK) {
         const String& payload = http.getString();
         Serial.println("received payload:\n<<");
