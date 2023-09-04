@@ -7,9 +7,9 @@
 #define DHT_TYPE DHT11
 #define PIN_SENSOR_SONIDO 4
 
-#define STASSID "TuSSID"
-#define STAPSK "TuContraseña"
-#define SERVER_IP "10.8.17.55"
+#define STASSID "https://subite-back.vercel.app/hard"
+#define STAPSK "IoT"
+#define SERVER_IP "elultimo10"
 
 DHT dht(DHT_PIN, DHT_TYPE);
 
