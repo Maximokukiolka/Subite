@@ -7,9 +7,9 @@
 #define DHT_TYPE DHT11
 #define PIN_SENSOR_SONIDO 4
 
-#define STASSID "https://subite-back.vercel.app/hard"
-#define STAPSK "IoT"
-#define SERVER_IP "elultimo10"
+#define STASSID "IoT"
+#define STAPSK "elultimo10"
+#define SERVER_IP "subite-back.vercel.app"
 
 DHT dht(DHT_PIN, DHT_TYPE);
 
@@ -50,9 +50,9 @@ void loop() {
     String query = "?temp=" + String(temperatura) + "&sound=" + String(valorSensorSonido);
 
     Serial.print("[HTTP] begin...\n");
-    Serial.println("http://" SERVER_IP "/hard" + query);
+    Serial.println("https://" SERVER_IP "/hard" + query);
 
-    http.begin(client, "http://" SERVER_IP "/hard");  // HTTP
+    http.begin(client, "https://" SERVER_IP "/hard");  // HTTP
     http.addHeader("Content-Type", "application/json");
 
     StaticJsonDocument<256> jsonDocument;

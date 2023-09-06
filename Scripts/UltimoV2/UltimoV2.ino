@@ -9,7 +9,7 @@
 
 #define STASSID "IoT"
 #define STAPSK "elultimo10"
-#define SERVER_IP ""
+#define SERVER_IP "https://subite-back.vercel.app/hard"
 
 DHT dht(DHT_PIN, DHT_TYPE);
 
@@ -25,19 +25,16 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("");
-  Serial.print("Conectado a la red WiFi. Dirección IP: ");
+  Serial.print("Conectado:D! Dirección IP: ");
   Serial.println(WiFi.localIP());
 }
 
 void loop() {
   if (WiFi.status() == WL_CONNECTED) {
-    WiFiClient client;
-    HTTPClient http;
-
     float humedad = dht.readHumidity();
     float temperatura = dht.readTemperature();
 
-    if (!isnan(humedad) && !isnan(temperatura)) {
+    if (!isnan(temperatura) && !isnan(humedad)) {
       Serial.print("Humedad: ");
       Serial.print(humedad);
       Serial.print("% - Temperatura: ");
@@ -53,7 +50,11 @@ void loop() {
       Serial.print("[HTTP] begin...\n");
       Serial.println("https://" SERVER_IP "/hard" + query);
 
-      http.begin(client, "https://" SERVER_IP "/hard");  // HTTP
+      WiFiClient client;
+      HTTPClient http;
+      
+      
+      http.begin(client, "https://" SERVER_IP "/hard");  
       http.addHeader("Content-Type", "application/json");
 
       StaticJsonDocument<256> jsonDocument;
@@ -74,17 +75,18 @@ void loop() {
           Serial.println("received payload:\n<<");
           Serial.println(payload);
           Serial.println(">>");
-        } else {
-          Serial.printf("[HTTP] POST... error: %s\n", http.getString().c_str());
         }
       } else {
-        Serial.println("[HTTP] POST... fallido");
+        Serial.printf("[HTTP] POST... fallido, error: %s\n", http.errorToString(httpCode).c_str());
       }
 
       http.end();
     } else {
-      Serial.println("Error al leer los sensores DHT.");
+      Serial.println("Error al leer los valores del sensor DHT11.");
     }
+  }
+  else {
+    Serial.println("Error de conexión Wi-Fi.");
   }
 
   delay(10000);
