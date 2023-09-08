@@ -2,8 +2,8 @@
 #include <ArduinoJson.h>
 #include <WiFiClient.h>
 
-const char* ssid = "IoT"; 
-const char* password = "elultimo10"; 
+const char* ssid = "KUKI_5.8"; 
+const char* password = "27204470435"; 
 
 const char* host = "postman-echo.com"; 
 const int port = 80; 
