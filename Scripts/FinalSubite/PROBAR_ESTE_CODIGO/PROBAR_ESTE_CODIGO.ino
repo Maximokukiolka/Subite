@@ -3,15 +3,15 @@
 #include <WiFiClient.h>
 
 
-const char* ssid = "IoT";
-const char* password = "elultimo10";
+const char* ssid = "IoTB";
+const char* password = "inventaronelVAR";
 
 
 const char* serverAddress = "https://subite-back.vercel.app/hard";
 const int serverPort = 80;
 
 
-#define DHTPIN 2
+#define DHTPIN 0  
 #define DHTTYPE DHT11
 
 DHT dht(DHTPIN, DHTTYPE);
@@ -55,8 +55,8 @@ void loop() {
     return;
   }
 
- s
-  String jsonPayload = "{\"temperatura\":" + String(temperatura) + ",\"humedad\":" + String(humedad) + "}";
+ 
+  String jsonPayload = "{\"temp\":" + String(temperatura) + ",\"hum\":" + String(humedad) + "}";
 
 
   String postData = "POST /ruta-api HTTP/1.1\r\n";

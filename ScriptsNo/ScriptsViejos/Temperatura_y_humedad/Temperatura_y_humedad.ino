@@ -1,7 +1,7 @@
 #include <DHT.h>
 
 #define DHT_PIN 2
-#define DHT_TYPE DHT22
+#define DHT_TYPE DHT11
 
 
 DHT dht(DHT_PIN, DHT_TYPE);
@@ -12,6 +12,7 @@ void setup()
  Serial.begin(115200);
 
  dht.begin();
+ delay(2000);
  
 }
 
