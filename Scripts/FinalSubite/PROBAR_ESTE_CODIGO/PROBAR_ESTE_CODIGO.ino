@@ -1,88 +1,36 @@
-#include <ESP8266WiFi.h>
-#include <DHT.h>
-#include <WiFiClient.h>
+#include <Arduino.h>
+#include <SPI.h>
+#include <Ethernet.h>
+#include <HttpClient.h>
 
-
-const char* ssid = "IoTB";
-const char* password = "inventaronelVAR";
-
-
-const char* serverAddress = "https://subite-back.vercel.app/hard";
-const int serverPort = 80;
-
-
-#define DHTPIN 0  
-#define DHTTYPE DHT11
-
-DHT dht(DHTPIN, DHTTYPE);
-
-
-WiFiClient client;
+char serverAddress[] = "http://prueba/hard/kuku"; // Cambia esto por la dirección de tu servidor
+int serverPort = 80;
+EthernetClient client;
+//HttpClient http(client);
 
 void setup() {
-  Serial.begin(115200);
-  delay(10);
-
- 
-  Serial.println();
-  Serial.println();
-  Serial.print("Conectando a ");
-  Serial.println(ssid);
-
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("");
-  Serial.println("Conexión WiFi exitosa");
-  Serial.println("Dirección IP: ");
-  Serial.println(WiFi.localIP());
-
-  dht.begin();
+  Ethernet.begin(mac);
+  Serial.begin(9600);
+  delay(1000);
 }
 
 void loop() {
+  // Define la información que deseas enviar en formato JSON
+  String jsonData = "{\"nombre\": \"Ejemplo\"}";
 
-  float temperatura = dht.readTemperature();
-  float humedad = dht.readHumidity();
+  // Configura los encabezados para indicar que estás enviando datos en formato JSON
+  String headers[] = {"Content-Type: application/json"};
+  
+  int statusCode = http.post(serverAddress, serverPort, "http://prueba/hard/kuku", jsonData, headers);
 
-
-  if (isnan(temperatura) || isnan(humedad)) {
-    Serial.println("Error al leer el sensor DHT11");
-    return;
-  }
-
- 
-  String jsonPayload = "{\"temp\":" + String(temperatura) + ",\"hum\":" + String(humedad) + "}";
-
-
-  String postData = "POST /ruta-api HTTP/1.1\r\n";
-  postData += "Host: " + String(serverAddress) + "\r\n";
-  postData += "Content-Type: application/json\r\n";
-  postData += "Content-Length: " + String(jsonPayload.length()) + "\r\n\r\n";
-  postData += jsonPayload;
-
-
-  if (client.connect(serverAddress, serverPort)) {
-    Serial.println("Conectado al servidor");
-    client.print(postData);
-
-
-    while (client.connected()) {
-      if (client.available()) {
-        String response = client.readStringUntil('\r');
-        Serial.println("Respuesta del servidor: ");
-        Serial.println(response);
-      }
-    }
-    client.stop();
+  if (statusCode == 200) {
+    Serial.println("Solicitud exitosa.");
+    Serial.print("Respuesta del servidor: ");
+    Serial.println(http.responseBody());
   } else {
-    Serial.println("Error al conectarse al servidor");
+    Serial.print("Error en la solicitud. Código de estado HTTP: ");
+    Serial.println(statusCode);
   }
 
-
-  delay(60000);  
+  delay(5000); // Espera 5 segundos antes de la siguiente solicitud
 }

@@ -16,12 +16,13 @@ void loop() {
   float humedad = dht.readHumidity();
   float temperatura = dht.readTemperature();  
 
-  if (!isnan(humedad) && !isnan(temperatura)) {
-    Serial.print("Humedad: ");
-    Serial.print(humedad);
+  if (!isnan(temperatura) && !isnan(humedad)) {
+ 
     Serial.print("% - Temperatura: ");
     Serial.print(temperatura);
-    Serial.println("°C");
+    Serial.println("°C");  
+    Serial.print("Humedad: ");
+    Serial.print(humedad);
   } 
   
   else 
