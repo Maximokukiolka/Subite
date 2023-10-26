@@ -1,9 +1,9 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
-const char* ssid = "IoTB";  // Reemplaza con el nombre de tu red Wi-Fi
+const char* ssid = "IoTB";  
 const char* password = "inventaronelVAR";  
-const char* serverAddress = "https://subite-back-git-main-ambarpalermo.vercel.app/hard";  // http://prueba/hard/kuku  https://subite-front.vercell.app 
+const char* serverAddress = "https://subite-back-git-main-ambarpalermo.vercel.app/hard";  //"http://jsonplaceholder.typicode.com/posts" http://prueba/hard/kuku  https://subite-front.vercell.app 
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
@@ -18,19 +18,23 @@ void setup() {
 
 void loop() {
   if (WiFi.status() == WL_CONNECTED) {
-    WiFiClient client;  // Crea un objeto WiFiClient
+    WiFiClient client;  
 
     HTTPClient http;
-    http.begin(client, serverAddress);  // Pasa el objeto WiFiClient a begin
+    http.begin(client, serverAddress);  
 
     // Configura el tipo de contenido de la solicitud a JSON
     http.addHeader("Content-Type", "application/json");
 
-    
+   StaticJsonBuffer<200> jsonBuffer;
     String jsonData = "[{\"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\"},{ \"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\" }]";
+    JsonObject& root = jsonBuffer.parseObject(jsonData);
 
-    
-    int httpResponseCode = http.POST(jsonData);
+
+    String data;
+    root.printTo(data);
+  
+    int httpResponseCode = http.POST(data);
 
     if (httpResponseCode > 0) {
       String response = http.getString();
@@ -46,5 +50,5 @@ void loop() {
     http.end();
   }
 
-  delay(10000);  // Espera 5 segundos antes de la siguiente solicitud
+  delay(10000);  
 }
