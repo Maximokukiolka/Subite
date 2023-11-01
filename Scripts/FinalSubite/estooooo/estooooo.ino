@@ -1,9 +1,10 @@
+
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
 const char* ssid = "IoTB";  
 const char* password = "inventaronelVAR";  
-const char* serverAddress = "https://subite-back-git-main-ambarpalermo.vercel.app/hard";  //"http://jsonplaceholder.typicode.com/posts" http://prueba/hard/kuku  https://subite-front.vercell.app 
+const char* serverAddress = "https://subite-back-git-main-ambarpalermo.vercel.app/hard/";  //"http://jsonplaceholder.typicode.com/posts" http://prueba/hard/kuku  https://subite-front.vercell.app 
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
@@ -24,17 +25,17 @@ void loop() {
     http.begin(client, serverAddress);  
 
     // Configura el tipo de contenido de la solicitud a JSON
-    http.addHeader("Content-Type", "application/json");
+    http.addHeader("Content-Type", "text/html");
 
-   StaticJsonBuffer<200> jsonBuffer;
+    // DynamicJsonDocument jsonDocument;
     String jsonData = "[{\"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\"},{ \"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\" }]";
-    JsonObject& root = jsonBuffer.parseObject(jsonData);
+    //JsonObject& root = jsonDocument.parseObject(jsonData);
 
 
-    String data;
-    root.printTo(data);
+    //String data;
+    //root.printTo(data);
   
-    int httpResponseCode = http.POST(data);
+    int httpResponseCode = http.POST(jsonData);
 
     if (httpResponseCode > 0) {
       String response = http.getString();
