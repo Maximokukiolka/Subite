@@ -4,7 +4,7 @@
 
 const char* ssid = "IoTB";  
 const char* password = "inventaronelVAR";  
-const char* serverAddress = "https://subite-back-git-main-ambarpalermo.vercel.app/hard/";  //"http://jsonplaceholder.typicode.com/posts" http://prueba/hard/kuku  https://subite-front.vercell.app 
+const char* serverAddress = "http://subite-back-git-main-ambarpalermo.vercel.app/hard/";  // "http://10.8.17.140:9000/HARD/hard" "http://jsonplaceholder.typicode.com/posts" "http://prueba/hard/kuku"  "https://subite-front.vercell.app" 
 
 void setup() {
   Serial.begin(115200);
@@ -23,20 +23,23 @@ void loop() {
     WiFiClient client;  
 
     HTTPClient http;
+
+    http.setReuse(true);
     http.begin(client, serverAddress);  
 
     // Configura el tipo de contenido de la solicitud a JSON
     http.addHeader("Content-Type", "text/html");
 
-    DynamicJsonDocument jsonDoc(2048);
+    DynamicJsonBuffer jsonDoc;
     String jsonData = "[{\"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\"},{ \"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\" }]";
     JsonObject& root = jsonDoc.parseObject(jsonData);
 
 
-    //String data;
-    //root.printTo(data);
-  
-    int httpResponseCode = http.POST(jsonData);
+    String data;
+    root.printTo(data);
+
+      
+    int httpResponseCode = http.POST(data);
 
     if (httpResponseCode > 0) {
       String response = http.getString();
