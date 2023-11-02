@@ -1,10 +1,11 @@
-
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
+#include <ArduinoJson.h>
 
 const char* ssid = "IoTB";  
 const char* password = "inventaronelVAR";  
 const char* serverAddress = "https://subite-back-git-main-ambarpalermo.vercel.app/hard/";  //"http://jsonplaceholder.typicode.com/posts" http://prueba/hard/kuku  https://subite-front.vercell.app 
+
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
@@ -27,9 +28,9 @@ void loop() {
     // Configura el tipo de contenido de la solicitud a JSON
     http.addHeader("Content-Type", "text/html");
 
-    // DynamicJsonDocument jsonDocument;
+    DynamicJsonDocument jsonDoc(2048);
     String jsonData = "[{\"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\"},{ \"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\" }]";
-    //JsonObject& root = jsonDocument.parseObject(jsonData);
+    JsonObject& root = jsonDoc.parseObject(jsonData);
 
 
     //String data;
