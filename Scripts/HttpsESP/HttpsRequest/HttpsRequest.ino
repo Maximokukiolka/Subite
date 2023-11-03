@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
-#include <WiFiClientSecure.h>  // Librería NUEVA
+#include <WiFiClientSecure.h>  // Librería NUEVA AGREGAR WifiClientSecure ultima version
 
 const char* ssid = "IoTB";
 const char* password = "inventaronelVAR";
