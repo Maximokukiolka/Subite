@@ -1,58 +1,79 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
-#include <WiFiClientSecure.h>  // Librería NUEVA AGREGAR WifiClientSecure ultima version
 
 const char* ssid = "IoTB";
 const char* password = "inventaronelVAR";
-const char* serverAddress = "https://subite-back-git-main-ambarpalermo.vercel.app/hard/";
+const char* server = "https://subite-back-git-main-ambarpalermo.vercel.app/hard";
+const int httpsPort = 443;
 
 void setup() {
   Serial.begin(115200);
-  WiFi.begin(ssid, password);
+  delay(10);
 
+  // Conéctate a la red WiFi
+  WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    Serial.println("Conectando a Wi-Fi...");
+    Serial.println("Conectando a la red WiFi...");
   }
+  Serial.println("Conexión WiFi establecida");
 
-  Serial.println("Conexión Wi-Fi exitosa.");
+  // Realiza la solicitud HTTPS
+  if (sendHTTPSRequest()) {
+    Serial.println("Solicitud HTTPS exitosa");
+  } else {
+    Serial.println("Fallo en la solicitud HTTPS");
+  }
 }
 
 void loop() {
-  if (WiFi.status() == WL_CONNECTED) {
-    WiFiClientSecure client; 
+  // Tu código adicional puede ir aquí
+}
 
-    HTTPClient http;
+bool sendHTTPSRequest() {
+  WiFiClientSecure client;
 
-    http.setReuse(true);
-    http.begin(client, serverAddress);
+  Serial.print("Conectando a ");
+  Serial.println(server);
 
-  
-    http.addHeader("Content-Type", "application/json");  
-
-    DynamicJsonBuffer jsonDoc;
-    String jsonData = "[{\"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\"},{ \"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\" }]";
-    JsonObject& root = jsonDoc.parseObject(jsonData);
-
-    String data;
-    root.printTo(data);
-
-    int httpResponseCode = http.POST(data);
-
-    if (httpResponseCode > 0) {
-      String response = http.getString();
-      Serial.println("Solicitud exitosa. Respuesta del servidor:");
-      Serial.print(httpResponseCode);
-      Serial.print(": ");
-      Serial.println(response);
-    } else {
-      Serial.print("Error en la solicitud. Código de estado HTTP: ");
-      Serial.println(httpResponseCode);
-    }
-
-    http.end();
+  if (!client.connect(server, httpsPort)) {
+    Serial.println("Conexión fallida");
+    return false;
   }
 
-  delay(10000);
+  // Construye los datos que quieres enviar en formato JSON
+  DynamicJsonDocument doc(200);
+  // Define tus datos JSON aquí
+  doc[0]["temp"] = 45;
+  doc[0]["hum"] = 32;
+  doc[0]["idVagon"] = 3;
+  doc[0]["idTren"] = 1;
+  doc[1]["temp"] = 45;
+  doc[1]["hum"] = 32;
+  doc[1]["idVagon"] = 3;
+  doc[1]["idTren"] = 1;
+  String jsonData;
+  serializeJson(doc, jsonData);
+   
+    // DynamicJsonBuffer jsonDoc;
+    //String jsonData = "[{\"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\"},{ \"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\" }]";
+    //JsonObject& root = jsonDoc.parseObject(jsonData);
+  
+  HTTPClient https;
+  https.begin(client, server, httpsPort, "/hard"); // Ruta con "/" al principio
+  https.addHeader("Content-Type", "application/json");
+  int httpCode = https.POST(jsonData);
+
+  if (httpCode > 0) {
+    String payload = https.getString();
+    Serial.println("Código de respuesta HTTP: " + String(httpCode));
+    Serial.println("Respuesta del servidor: " + payload);
+    https.end();
+    return true;
+  } else {
+    Serial.println("Error en la solicitud HTTPS");
+    https.end();
+    return false;
+  }
 }
