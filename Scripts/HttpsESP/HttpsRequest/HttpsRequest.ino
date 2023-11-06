@@ -4,7 +4,7 @@
 
 const char* ssid = "IoTB";
 const char* password = "inventaronelVAR";
-const char* server = "https://subite-back-git-main-ambarpalermo.vercel.app/hard";
+const char* server = "https://subite-back-git-main-ambarpalermo.vercel.app";
 const int httpsPort = 443;
 
 void setup() {
@@ -43,22 +43,23 @@ bool sendHTTPSRequest() {
   }
 
   // Construye los datos que quieres enviar en formato JSON
-  DynamicJsonDocument doc(200);
+  //DynamicJsonDocument doc(200);
   // Define tus datos JSON aquí
-  doc[0]["temp"] = 45;
-  doc[0]["hum"] = 32;
-  doc[0]["idVagon"] = 3;
-  doc[0]["idTren"] = 1;
-  doc[1]["temp"] = 45;
-  doc[1]["hum"] = 32;
-  doc[1]["idVagon"] = 3;
-  doc[1]["idTren"] = 1;
-  String jsonData;
-  serializeJson(doc, jsonData);
+  //doc[0]["temp"] = 45;
+  //doc[0]["hum"] = 32;
+  //doc[0]["idVagon"] = 3;
+  //doc[0]["idTren"] = 1;
+  //doc[1]["temp"] = 45;
+  //doc[1]["hum"] = 32;
+  //doc[1]["idVagon"] = 3;
+  //doc[1]["idTren"] = 1;
+  
+  //String jsonData;
+  //serializeJson(doc, jsonData);
    
-    // DynamicJsonBuffer jsonDoc;
-    //String jsonData = "[{\"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\"},{ \"temp\" : \"45\", \"hum\" : \"32\", \"idVagon\" : \"3\", \"idTren\" : \"1\" }]";
-    //JsonObject& root = jsonDoc.parseObject(jsonData);
+    DynamicJsonBuffer jsonDoc;
+    String jsonData = "[{\"temp\" : 45, \"hum\" : 32, \"idVagon\" : 3, \"idTren\" : 1},{ \"temp\" : 45, \"hum\" : 32, \"idVagon\" : 3, \"idTren\" : 1 }]";
+    JsonObject& root = jsonDoc.parseObject(jsonData);
   
   HTTPClient https;
   https.begin(client, server, httpsPort, "/hard"); // Ruta con "/" al principio
