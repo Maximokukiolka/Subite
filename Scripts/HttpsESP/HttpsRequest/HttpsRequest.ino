@@ -7,6 +7,8 @@ const char* password = "inventaronelVAR";
 const char* server = "https://subite-back-git-main-ambarpalermo.vercel.app";
 const int httpsPort = 443;
 
+WiFiClientSecure client;
+
 void setup() {
   Serial.begin(115200);
   delay(10);
@@ -32,8 +34,6 @@ void loop() {
 }
 
 bool sendHTTPSRequest() {
-  WiFiClientSecure client;
-
   Serial.print("Conectando a ");
   Serial.println(server);
 
@@ -57,9 +57,9 @@ bool sendHTTPSRequest() {
   //String jsonData;
   //serializeJson(doc, jsonData);
    
-    DynamicJsonBuffer jsonDoc;
+    DynamicJsonDocument jsonDoc(200);
     String jsonData = "[{\"temp\" : 45, \"hum\" : 32, \"idVagon\" : 3, \"idTren\" : 1},{ \"temp\" : 45, \"hum\" : 32, \"idVagon\" : 3, \"idTren\" : 1 }]";
-    JsonObject& root = jsonDoc.parseObject(jsonData);
+    //JsonObject& root = jsonDoc.parseObject(jsonData);
   
   HTTPClient https;
   https.begin(client, server, httpsPort, "/hard"); // Ruta con "/" al principio
@@ -77,4 +77,12 @@ bool sendHTTPSRequest() {
     https.end();
     return false;
   }
+  
 }
+ //AGREGAR ARRIBA
+  char sslErrorMsg[80];
+  int sslError = client.getLastSSLError(sslErrorMsg, sizeof(sslErrorMsg));
+  if (sslError) {
+    Serial.printf("SSL error: %d: %s\r\n", sslError, sslErrorMsg);
+  }
+  http.end();
