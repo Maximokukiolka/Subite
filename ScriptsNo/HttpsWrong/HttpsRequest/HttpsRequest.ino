@@ -1,12 +1,15 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
 
 const char* ssid = "IoTB";
 const char* password = "inventaronelVAR";
 const char* server = "https://subite-back-git-main-ambarpalermo.vercel.app";
 const int httpsPort = 443;
 
+WiFiUDP ntpUDP;
 WiFiClientSecure client;
 
 void setup() {
@@ -20,6 +23,7 @@ void setup() {
     Serial.println("Conectando a la red WiFi...");
   }
   Serial.println("Conexión WiFi establecida");
+  //client.setInsecure();
 
   // Realiza la solicitud HTTPS
   if (sendHTTPSRequest()) {
@@ -39,6 +43,11 @@ bool sendHTTPSRequest() {
 
   if (!client.connect(server, httpsPort)) {
     Serial.println("Conexión fallida");
+    char sslErrorMsg[80];
+    int sslError = client.getLastSSLError(sslErrorMsg, sizeof(sslErrorMsg));
+    if (sslError) {
+      Serial.printf("SSL error: %d: %s\r\n", sslError, sslErrorMsg);
+    }
     return false;
   }
 
@@ -53,16 +62,16 @@ bool sendHTTPSRequest() {
   //doc[1]["hum"] = 32;
   //doc[1]["idVagon"] = 3;
   //doc[1]["idTren"] = 1;
-  
+
   //String jsonData;
   //serializeJson(doc, jsonData);
-   
-    DynamicJsonDocument jsonDoc(200);
-    String jsonData = "[{\"temp\" : 45, \"hum\" : 32, \"idVagon\" : 3, \"idTren\" : 1},{ \"temp\" : 45, \"hum\" : 32, \"idVagon\" : 3, \"idTren\" : 1 }]";
-    //JsonObject& root = jsonDoc.parseObject(jsonData);
-  
+
+  DynamicJsonDocument jsonDoc(200);
+  String jsonData = "[{\"temp\" : 45, \"hum\" : 32, \"idVagon\" : 3, \"idTren\" : 1},{ \"temp\" : 45, \"hum\" : 32, \"idVagon\" : 3, \"idTren\" : 1 }]";
+  //JsonObject& root = jsonDoc.parseObject(jsonData);
+
   HTTPClient https;
-  https.begin(client, server, httpsPort, "/hard"); // Ruta con "/" al principio
+  https.begin(client, server, httpsPort, "/hard");  // Ruta con "/" al principio
   https.addHeader("Content-Type", "application/json");
   int httpCode = https.POST(jsonData);
 
@@ -77,12 +86,4 @@ bool sendHTTPSRequest() {
     https.end();
     return false;
   }
-  
 }
- //AGREGAR ARRIBA
-  char sslErrorMsg[80];
-  int sslError = client.getLastSSLError(sslErrorMsg, sizeof(sslErrorMsg));
-  if (sslError) {
-    Serial.printf("SSL error: %d: %s\r\n", sslError, sslErrorMsg);
-  }
-  http.end();
