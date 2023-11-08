@@ -1,9 +1,9 @@
 #include <DHT.h>
 
-#define DHTPIN 4
-#define DHTTYPE DHT11
+  #define DHTPIN 4
+  #define DHTTYPE DHT11
 
-DHT dht(DHTPIN, DHTTYPE);
+  DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {
   Serial.begin(115200);                              
