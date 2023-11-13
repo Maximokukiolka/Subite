@@ -27,7 +27,7 @@ void loop() {
   
   else 
   {
-    Serial.println("Error en la lectura del sensor. Comprueba la conexión o espera...");
+    Serial.println("Error en la lectura del sensor. Comprueba la conexión o espera..." + String(temperatura));
   }
 
   delay(2000);
