@@ -28,7 +28,7 @@ void loop() {
     HTTPClient https;
 
     Serial.print("[HTTPS] begin...\n");
-    if (https.begin(*client, "https://subite-back-git-main-ambarpalermo.vercel.app/hard")) {
+    if (https.begin(*client, "https://subite-back-git-main-ambarpalermo.vercel.app/HARD/hard")) {
       Serial.print("[HTTPS] POST...\n");
 
       float humedad = dht.readHumidity();
